@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boyfriend Proposal</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Georgia', serif;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      padding: 2rem;
+      background: linear-gradient(135deg, #ff6b9d 0%, #ffc3d5 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Floating hearts background */
+    .heart-bg {
+      position: absolute;
+      font-size: 2.5rem;
+      opacity: 0.15;
+      pointer-events: none;
+      animation: floatHeart 8s ease-in-out infinite;
+    }
+
+    @keyframes floatHeart {
+      0%, 100% { 
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.15;
+      }
+      50% { 
+        transform: translateY(-30px) rotate(10deg);
+        opacity: 0.25;
+      }
+    }
+
+    /* Main card */
+    .proposal-card {
+      background: linear-gradient(135deg, #fff5f8 0%, #ffe8f0 100%);
+      border-radius: 32px;
+      padding: 3.5rem 3rem;
+      box-shadow: 0 25px 70px rgba(255, 107, 157, 0.35), 
+                  0 10px 30px rgba(255, 107, 157, 0.2);
+      border: 4px solid rgba(255, 179, 209, 0.6);
+      text-align: center;
+      max-width: 550px;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease;
+    }
+
+    .proposal-card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Top emoji */
+    .emoji-top {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      animation: pulseEmoji 2s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes pulseEmoji {
+      0%, 100% { 
+        transform: scale(1) rotate(0deg);
+      }
+      25% {
+        transform: scale(1.15) rotate(-5deg);
+      }
+      75% {
+        transform: scale(1.15) rotate(5deg);
+      }
+    }
+
+    /* Title */
+    h1 {
+      font-size: 2.8rem;
+      color: #2d3748;
+      margin: 0 0 2.5rem 0;
+      line-height: 1.3;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Button container */
+    .button-container {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2.5rem;
+      position: relative;
+      min-height: 140px;
+      width: 100%;
+    }
+
+    button {
+      padding: 1.2rem 2rem;
+      font-size: 1.4rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Georgia', serif;
+      width: 160px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      position: absolute;
+    }
+
+    .yes-btn {
+      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+      color: white;
+      left: calc(50% - 170px);
+      top: 0;
+      z-index: 2;
+    }
+
+    .yes-btn:hover {
+      background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+      transform: scale(1.08) translateY(-3px);
+      box-shadow: 0 10px 30px rgba(72, 187, 120, 0.4);
+    }
+
+    .yes-btn:active {
+      transform: scale(1.02);
+    }
+
+    .no-btn {
+      background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+      color: white;
+      left: calc(50% + 10px);
+      top: 0;
+      transition: all 0.2s ease;
+    }
+
+    .no-btn:hover {
+      background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+      transform: scale(1.05);
+    }
+
+    /* Success message */
+    .success-message {
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+      animation: fadeInScale 1s ease-out forwards;
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.7) translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .success-message h2 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 1rem 0;
+      font-weight: bold;
+    }
+
+    .success-message p {
+      font-size: 1.3rem;
+      color: #4a5568;
+      line-height: 1.7;
+      margin: 1.5rem 0;
+    }
+
+    .date-message {
+      font-size: 1.6rem;
+      color: #ff6b9d;
+      font-weight: bold;
+      margin: 2rem 0 1.5rem 0;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 16px;
+      border: 3px solid #ffb3d1;
+      box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% {
+        box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
+      }
+      50% {
+        box-shadow: 0 4px 25px rgba(255, 107, 157, 0.4);
+      }
+    }
+
+    .hearts-celebration {
+      font-size: 2.5rem;
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .heart-beat {
+      display: inline-block;
+      animation: heartBeat 1.2s ease-in-out infinite;
+    }
+
+    .heart-beat:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .heart-beat:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .heart-beat:nth-child(4) {
+      animation-delay: 0.6s;
+    }
+
+    .heart-beat:nth-child(5) {
+      animation-delay: 0.8s;
+    }
+
+    @keyframes heartBeat {
+      0%, 100% { 
+        transform: scale(1);
+      }
+      25% { 
+        transform: scale(1.4);
+      }
+      50% { 
+        transform: scale(1);
+      }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      animation: confettiFall 4s linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100%) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(calc(100% + 100px)) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Sparkle effect */
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      animation: sparkleFloat 3s ease-in-out infinite;
+      pointer-events: none;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes sparkleFloat {
+      0%, 100% {
+        transform: translateY(0) scale(0);
+        opacity: 0;
+      }
+      50% {
+        transform: translateY(-50px) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes popperBurst {
+      0% {
+        transform: scale(0.5) rotate(0deg);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.5) rotate(180deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .proposal-card {
+        padding: 2rem 1.5rem;
+        border-radius: 24px;
+        max-width: 100%;
+      }
+
+      .emoji-top {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+      }
+
+      .button-container {
+        min-height: 100px;
+      }
+
+      button {
+        width: 120px;
+        height: 55px;
+        font-size: 1.1rem;
+        padding: 0.8rem 1rem;
+      }
+
+      .yes-btn {
+        left: calc(50% - 130px);
+      }
+
+      .success-message h2 {
+        font-size: 2rem;
+      }
+
+      .success-message p {
+        font-size: 1.1rem;
+      }
+
+      .date-message {
+        font-size: 1.2rem;
+        padding: 1rem;
+      }
+
+      .hearts-celebration {
+        font-size: 2rem;
+        gap: 0.5rem;
+      }
+
+      .heart-bg {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0.5rem;
+      }
+
+      .proposal-card {
+        padding: 1.5rem 1rem;
+        border-radius: 20px;
+      }
+
+      .emoji-top {
+        font-size: 3rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .button-container {
+        min-height: 90px;
+        gap: 1rem;
+      }
+
+      button {
+        width: 100px;
+        height: 50px;
+        font-size: 1rem;
+        border-radius: 12px;
+      }
+
+      .yes-btn {
+        left: calc(50% - 110px);
+      }
+
+      .success-message h2 {
+        font-size: 1.7rem;
+      }
+
+      .success-message p {
+        font-size: 1rem;
+        margin: 1rem 0;
+      }
+
+      .date-message {
+        font-size: 1rem;
+        padding: 0.8rem;
+        margin: 1.5rem 0 1rem 0;
+      }
+
+      .hearts-celebration {
+        font-size: 1.8rem;
+        margin-top: 1rem;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="container" id="container"><!-- Floating hearts background -->
+   <div class="heart-bg" style="top: 8%; left: 12%; animation-delay: 0s;">
+    💕
+   </div>
+   <div class="heart-bg" style="top: 18%; right: 10%; animation-delay: 1.2s;">
+    💖
+   </div>
+   <div class="heart-bg" style="bottom: 12%; left: 18%; animation-delay: 2.4s;">
+    💗
+   </div>
+   <div class="heart-bg" style="bottom: 22%; right: 8%; animation-delay: 0.6s;">
+    💝
+   </div>
+   <div class="heart-bg" style="top: 48%; left: 6%; animation-delay: 1.8s;">
+    💕
+   </div>
+   <div class="heart-bg" style="top: 58%; right: 5%; animation-delay: 3s;">
+    💖
+   </div>
+   <div class="heart-bg" style="top: 32%; left: 88%; animation-delay: 3.6s;">
+    💗
+   </div>
+   <div class="heart-bg" style="bottom: 38%; right: 22%; animation-delay: 1s;">
+    💝
+   </div>
+   <div class="heart-bg" style="top: 72%; left: 14%; animation-delay: 2.2s;">
+    💕
+   </div>
+   <div class="heart-bg" style="top: 12%; left: 48%; animation-delay: 2.8s;">
+    💖
+   </div>
+   <div class="heart-bg" style="bottom: 8%; right: 38%; animation-delay: 1.4s;">
+    💗
+   </div>
+   <div class="heart-bg" style="top: 42%; right: 3%; animation-delay: 3.4s;">
+    💝
+   </div>
+   <div class="heart-bg" style="top: 65%; left: 82%; animation-delay: 0.8s;">
+    💕
+   </div>
+   <div class="heart-bg" style="bottom: 45%; left: 8%; animation-delay: 2.6s;">
+    💖
+   </div>
+   <div class="heart-bg" style="top: 25%; right: 42%; animation-delay: 1.6s;">
+    💗
+   </div>
+   <div class="proposal-card" id="proposalCard">
+    <div class="emoji-top">
+     💐
+    </div>
+    <h1 id="proposalTitle">Will you accept Jovan as your full-time boyfriend?</h1>
+    <div id="questionSection">
+     <div class="button-container" id="buttonContainer"><button class="yes-btn" id="yesBtn" aria-label="Accept proposal">Yes! 💕</button> <button class="no-btn" id="noBtn" aria-label="Decline proposal">No</button>
+     </div>
+    </div>
+    <div class="success-message" id="successMessage">
+     <div class="emoji-top">
+      🎉
+     </div>
+     <h2>Yay! 💕</h2>
+     <p id="sweetMessage">You've just made me the happiest person in the world! I promise to cherish every moment with you, make you smile every day, and love you with all my heart. Thank you for saying yes! 💖</p>
+     <div class="date-message" id="dateMessage"></div>
+     <div class="hearts-celebration"><span class="heart-beat">❤️</span> <span class="heart-beat">💕</span> <span class="heart-beat">💖</span> <span class="heart-beat">💗</span> <span class="heart-beat">💝</span>
+     </div>
+    </div>
+   </div>
+  </main>
+  <script>
+    const defaultConfig = {
+      proposal_title: "Will you accept Jovan as your full-time boyfriend?",
+      boyfriend_name: "Jovan",
+      girlfriend_name: "Cathleen",
+      success_message: "You've just made me the happiest person in the world! I promise to cherish every moment with you, make you smile every day, and love you with all my heart. Thank you for saying yes! 💖",
+      background_color: "#ff6b9d",
+      card_color: "#fff5f8",
+      text_color: "#2d3748",
+      yes_button_color: "#48bb78",
+      no_button_color: "#fc8181"
+    };
+
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const questionSection = document.getElementById('questionSection');
+    const successMessage = document.getElementById('successMessage');
+    const container = document.getElementById('container');
+    const buttonContainer = document.getElementById('buttonContainer');
+
+    let noBtnClicks = 0;
+
+    yesBtn.addEventListener('click', () => {
+      questionSection.style.display = 'none';
+      successMessage.classList.add('show');
+      
+      // Display the date message
+      const dateMessage = document.getElementById('dateMessage');
+      const today = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDate = today.toLocaleDateString('en-US', options);
+      const boyfriendName = window.elementSdk?.config?.boyfriend_name || defaultConfig.boyfriend_name;
+      const girlfriendName = window.elementSdk?.config?.girlfriend_name || defaultConfig.girlfriend_name;
+      dateMessage.textContent = `From this ${formattedDate}, ${boyfriendName} is ${girlfriendName}'s Boyfriend 💕`;
+      
+      createPoppers();
+      createConfetti();
+      createSparkles();
+    });
+
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      noBtnClicks++;
+      
+      const containerRect = buttonContainer.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+      const yesBtnRect = yesBtn.getBoundingClientRect();
+      
+      const maxX = containerRect.width - btnRect.width;
+      const maxY = containerRect.height - btnRect.height;
+      
+      let randomX, randomY;
+      let attempts = 0;
+      const maxAttempts = 50;
+      
+      do {
+        randomX = Math.random() * maxX;
+        randomY = Math.random() * maxY;
+        
+        const noLeft = randomX;
+        const noRight = randomX + btnRect.width;
+        const noTop = randomY;
+        const noBottom = randomY + btnRect.height;
+        
+        const yesLeft = yesBtnRect.left - containerRect.left;
+        const yesRight = yesLeft + yesBtnRect.width;
+        const yesTop = yesBtnRect.top - containerRect.top;
+        const yesBottom = yesTop + yesBtnRect.height;
+        
+        const padding = 25;
+        const noOverlap = (noRight + padding < yesLeft) || 
+                         (noLeft - padding > yesRight) || 
+                         (noBottom + padding < yesTop) || 
+                         (noTop - padding > yesBottom);
+        
+        if (noOverlap) break;
+        attempts++;
+      } while (attempts < maxAttempts);
+      
+      randomX = Math.max(0, Math.min(randomX, maxX));
+      randomY = Math.max(0, Math.min(randomY, maxY));
+      
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
+      
+      if (noBtnClicks === 3) {
+        noBtn.textContent = 'Please? 🥺';
+      } else if (noBtnClicks === 6) {
+        noBtn.textContent = 'Try Yes! 💕';
+      } else if (noBtnClicks === 10) {
+        noBtn.textContent = 'Pretty Please? 🙏';
+      }
+    });
+
+    function createConfetti() {
+      const colors = ['#ff6b9d', '#48bb78', '#4299e1', '#ed8936', '#9f7aea', '#ffd700'];
+      
+      for (let i = 0; i < 80; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+          container.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 6000);
+        }, i * 40);
+      }
+    }
+
+    function createPoppers() {
+      // Create party poppers on both sides
+      const positions = [
+        { left: '15%', bottom: '20%' },
+        { right: '15%', bottom: '20%' }
+      ];
+
+      positions.forEach((pos, index) => {
+        setTimeout(() => {
+          const popper = document.createElement('div');
+          popper.textContent = '🎉';
+          popper.style.position = 'absolute';
+          popper.style.fontSize = '4rem';
+          popper.style.zIndex = '100';
+          Object.assign(popper.style, pos);
+          popper.style.animation = 'popperBurst 0.8s ease-out forwards';
+          container.appendChild(popper);
+
+          setTimeout(() => popper.remove(), 1000);
+        }, index * 200);
+      });
+    }
+
+    function createSparkles() {
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle';
+          sparkle.style.left = (Math.random() * 80 + 10) + '%';
+          sparkle.style.bottom = '10%';
+          sparkle.style.animationDelay = Math.random() * 1 + 's';
+          container.appendChild(sparkle);
+          
+          setTimeout(() => sparkle.remove(), 3000);
+        }, i * 150);
+      }
+    }
+
+    async function onConfigChange(config) {
+      const proposalTitle = document.getElementById('proposalTitle');
+      const sweetMessage = document.getElementById('sweetMessage');
+      const h1Element = document.querySelector('h1');
+      const yesButton = document.getElementById('yesBtn');
+      const noButton = document.getElementById('noBtn');
+
+      proposalTitle.textContent = config.proposal_title || defaultConfig.proposal_title;
+      sweetMessage.textContent = config.success_message || defaultConfig.success_message;
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      container.style.background = `linear-gradient(135deg, ${bgColor} 0%, #ffc3d5 100%)`;
+      
+      const cardColor = config.card_color || defaultConfig.card_color;
+      document.getElementById('proposalCard').style.background = `linear-gradient(135deg, ${cardColor} 0%, #ffe8f0 100%)`;
+      
+      h1Element.style.color = config.text_color || defaultConfig.text_color;
+      
+      const yesColor = config.yes_button_color || defaultConfig.yes_button_color;
+      yesButton.style.background = `linear-gradient(135deg, ${yesColor} 0%, ${yesColor} 100%)`;
+      
+      const noColor = config.no_button_color || defaultConfig.no_button_color;
+      noButton.style.background = `linear-gradient(135deg, ${noColor} 0%, ${noColor} 100%)`;
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.card_color || defaultConfig.card_color,
+              set: (value) => {
+                config.card_color = value;
+                window.elementSdk.setConfig({ card_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.yes_button_color || defaultConfig.yes_button_color,
+              set: (value) => {
+                config.yes_button_color = value;
+                window.elementSdk.setConfig({ yes_button_color: value });
+              }
+            },
+            {
+              get: () => config.no_button_color || defaultConfig.no_button_color,
+              set: (value) => {
+                config.no_button_color = value;
+                window.elementSdk.setConfig({ no_button_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["proposal_title", config.proposal_title || defaultConfig.proposal_title],
+          ["boyfriend_name", config.boyfriend_name || defaultConfig.boyfriend_name],
+          ["girlfriend_name", config.girlfriend_name || defaultConfig.girlfriend_name],
+          ["success_message", config.success_message || defaultConfig.success_message]
+        ])
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99c79bd81021a8f7',t:'MTc2Mjc5OTI5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
